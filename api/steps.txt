@@ -1,0 +1,42 @@
+1. rota de criação de sessão : create checkout
+
+payment_method_types: ['card'],
+line_items: order_items,
+success_url,
+cancel_url,
+client_reference_id: 'id de referência do cliente',
+customer_email: 'email do cliente',
+retorna para o cliente o id do produto e o id da sessão de checkout
+
+
+
+2. o cliente deve preparar uma webview para esta operação, 
+pois ocorrera em uma página com um script injetado do stripe
+
+
+
+3. pagina de redirecionamento de checkout.
+Esta página recebe a chave publica da api do stripe e o id de sessão de checkout
+e retorna uma página com o script de checkout do stripe.
+
+<!-- Load Stripe.js on your website. -->
+<script src="https://js.stripe.com/v3"></script>
+<h1>Redirecting you to Checkout...</h1>
+<div id="error-message"></div>
+<script>
+  (function () {
+    var stripe = Stripe('${stripePublicKey}');
+    window.onload = function () {
+      stripe.redirectToCheckout({
+        sessionId: '${sessionId}'
+      })
+      .then(function (result) {
+        if (result.error) {
+          var displayError = document.getElementById('error-message');
+          displayError.textContent = result.error.message;
+        }
+      });
+    };
+  })();
+</script>
+ 
